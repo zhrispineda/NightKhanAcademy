@@ -11,3 +11,6 @@ Open the project in Xcode, build, run, and enable the extension in Safari.
 
 > [!IMPORTANT]  
 > You may need to enable `Allow unsigned extensions` under the Developer tab in Safari settings. If you do not see this option, you may need to enable `Show features for web developers` under Advanced in Safari settings.
+
+> [!WARNING]  
+> Since Khan Academy is dynamically loaded, this extension could stop working properly without warning at any time.
