@@ -13,23 +13,22 @@ if (darkModeEnabled) {
 function injectDarkMode() {
     style = document.createElement('style');
     style.textContent = `
-        /* Remove existing backgrounds from all elements */
-        * {
-            background-image: none !important;
-        }
-      
         /* Base backgrounds and elements */
-        html, main, ._1v7bqtc2, #header-dropdown, #top-header-container, .stp-animated-banner, .user-info, ._1dbhd502, ._vmquk6f {
+        html, main, ._1v7bqtc2, #header-dropdown, #top-header-container, .user-info, ._1dbhd502 {
             background-color: #121212 !important;
         }
       
+        .stp-animated-banner, ._158ir6wt, ._vmquk6f {
+            background-color: #232323 !important;
+        }
+      
         /* Texts to update for dark mode */
-        h2, h4, b, ._1h62wb2e, ._1ltrm5gv, ._1m7imn5w, ._9pl6rtj, ._1irdsj0v, ._167zy1df, ._1bkn1zo, ._7mb6uf5, ._136dqw5w, ._1h09evv, .badge-count {
+        h2, h4, b, ._1h62wb2e, ._1ltrm5gv, ._1m7imn5w, ._9pl6rtj, ._1irdsj0v, ._167zy1df, ._1bkn1zo, ._7mb6uf5, ._136dqw5w, ._1h09evv, .badge-count, ._1ell7dku, ._1hl2debl, ._8ry3zep {
             color: #FFFFFF !important;
         }
       
         /* Selected text */
-        ._eheaiue, ._1k43t9ye, ._x1h08ae {
+        ._eheaiue, ._1k43t9ye, ._x1h08ae, ._1ejvexq8, ._1nlxlc8a {
             color: #1865F2 !important;
         }
       
@@ -90,7 +89,7 @@ function injectToggleButton() {
     anchor.className = "_v7zs5hu _p8zr6r"; // Match <a> style of dropdown buttons
     
     const span = document.createElement("span");
-    span.className = "_1k43t9ye"; // Match <span> style of dropdown buttons
+    span.className = "_i7xxeac"; // Match <span> style of dropdown buttons
     span.textContent = "Toggle Dark Mode";
     
     anchor.appendChild(span);
