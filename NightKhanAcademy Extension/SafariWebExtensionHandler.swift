@@ -2,8 +2,6 @@
 //  SafariWebExtensionHandler.swift
 //  NightKhanAcademy Extension
 //
-//  Created by Chris on 5/28/25.
-//
 
 import SafariServices
 import os.log

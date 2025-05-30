@@ -2,8 +2,6 @@
 //  NightKhanAcademyUITestsLaunchTests.swift
 //  NightKhanAcademyUITests
 //
-//  Created by Chris on 5/28/25.
-//
 
 import XCTest
 

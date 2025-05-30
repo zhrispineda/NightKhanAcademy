@@ -14,26 +14,34 @@ function injectDarkMode() {
     style = document.createElement('style');
     style.textContent = `
         /* Base backgrounds and elements */
-        html, main, ._1v7bqtc2, #header-dropdown, #top-header-container, .user-info, ._1dbhd502 {
+        html, main, ._1v7bqtc2, #header-dropdown, #top-header-container, ._1dbhd502 {
             background-color: #121212 !important;
         }
       
-        .stp-animated-banner, ._158ir6wt, ._vmquk6f {
-            background-color: #232323 !important;
+        .stp-animated-banner, ._158ir6wt, ._vmquk6f, #username-picker-container, .modal-footer, ._fss88w4 {
+            background-color: #191919 !important;
+        }
+      
+        .user-info, .header-user-settings, ._lhvgag5, ._xmja1e8, ._xu2jcg, ._c53vsu1 {
+            background-color: #1F1F1F !important;
+        }
+      
+        ._c53vsu1 {
+            border: solid 1px rgba(200,200,200,0.50) !important;
         }
       
         /* Texts to update for dark mode */
-        h2, h4, b, ._1h62wb2e, ._1ltrm5gv, ._1m7imn5w, ._9pl6rtj, ._1irdsj0v, ._167zy1df, ._1bkn1zo, ._7mb6uf5, ._136dqw5w, ._1h09evv, .badge-count, ._1ell7dku, ._1hl2debl, ._8ry3zep {
+        h2, h3, h4, b, ._1h62wb2e, ._1ltrm5gv, ._1m7imn5w, ._9pl6rtj, ._1irdsj0v, ._167zy1df, ._1bkn1zo, ._7mb6uf5, ._136dqw5w, ._1h09evv, .badge-count, ._1ell7dku, ._1hl2debl, ._8ry3zep, ._1q0d09t, ._dwmetq {
             color: #FFFFFF !important;
         }
       
         /* Selected text */
-        ._eheaiue, ._1k43t9ye, ._x1h08ae, ._1ejvexq8, ._1nlxlc8a {
+        ._eheaiue, ._1k43t9ye, ._x1h08ae, ._1ejvexq8, ._1nlxlc8a, .empty-field {
             color: #1865F2 !important;
         }
       
         /* Streak explanation bubble background, level explanation bubble background */
-        ._xv24cwj, ._xu2jcg {
+        ._xv24cwj {
             background-color: #121212 !important;
         }
       `;
@@ -99,7 +107,7 @@ function injectToggleButton() {
         } else {
             ejectDarkMode();
         }
-        console.log("[NightKhanAcademy] Dark Mode is now " + (darkModeEnabled == true ? "on" : "off"));
+        console.log(`[NightKhanAcademy] Dark Mode is now ${darkModeEnabled ? "on" : "off"}`);
     });
     
     listItem.appendChild(anchor);

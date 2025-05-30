@@ -2,8 +2,6 @@
 //  AppDelegate.swift
 //  NightKhanAcademy
 //
-//  Created by Chris on 5/28/25.
-//
 
 import Cocoa
 

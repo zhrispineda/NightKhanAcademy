@@ -2,8 +2,6 @@
 //  NightKhanAcademyTests.swift
 //  NightKhanAcademyTests
 //
-//  Created by Chris on 5/28/25.
-//
 
 import Testing
 @testable import NightKhanAcademy
