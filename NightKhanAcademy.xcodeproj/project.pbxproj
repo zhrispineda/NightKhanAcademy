@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		83AFE8F72DE7CE6A00533895 /* NightKhanAcademy Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 83AFE8F62DE7CE6A00533895 /* NightKhanAcademy Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		83DDA3822DE92CF80020871B /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 83DDA3812DE92CF80020871B /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		83AFE8E02DE7CE6A00533895 /* NightKhanAcademyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightKhanAcademyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		83AFE8EA2DE7CE6A00533895 /* NightKhanAcademyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightKhanAcademyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		83AFE8F62DE7CE6A00533895 /* NightKhanAcademy Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "NightKhanAcademy Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		83DDA3812DE92CF80020871B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -130,6 +132,7 @@
 		83AFE8BB2DE7CE6A00533895 = {
 			isa = PBXGroup;
 			children = (
+				83DDA3812DE92CF80020871B /* README.md */,
 				83AFE8C62DE7CE6A00533895 /* NightKhanAcademy */,
 				83AFE8E32DE7CE6A00533895 /* NightKhanAcademyTests */,
 				83AFE8ED2DE7CE6A00533895 /* NightKhanAcademyUITests */,
@@ -297,6 +300,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83DDA3822DE92CF80020871B /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
