@@ -4,13 +4,9 @@
 
 body {
     width: 200px;
-    height: 200px;
     padding: 5px;
 
     font-family: system-ui;
+    font-size: 12px;
     text-align: center;
-}
-
-@media (prefers-color-scheme: dark) {
-    /* Dark Mode styles go here. */
 }

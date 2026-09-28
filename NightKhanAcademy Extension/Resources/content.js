@@ -1,180 +1,232 @@
-console.log("NightKhanAcademy has arrived");
+const LOG_PREFIX = "[NightKhanAcademy]";
+const STORAGE_KEY = "DarkModeEnabled";
+const TOGGLE_MARKER = "data-nightkhanacademy-toggle";
 
-let darkModeEnabled = false;
-let style = null;
-let observer = null;
-localStorage.getItem("DarkModeEnabled") == "true" ? darkModeEnabled = true: darkModeEnabled = false;
-console.log(`[NightKhanAcademy] Dark Mode is currently ${darkModeEnabled ? "on" : "off"}`);
+const ATTR = {
+    background: "data-nka-bg",
+    backgroundImage: "data-nka-bg-image",
+    text: "data-nka-fg",
+    border: "data-nka-border",
+};
 
-if (darkModeEnabled) {
-    injectDarkMode();
+const DARK_MODE_CSS = `
+    :root, [data-wb-theme] {
+        --wb-semanticColor-core-background-base-default: #1E1E1E !important;
+        --wb-semanticColor-core-background-base-subtle: #2A2A2A !important;
+        --wb-semanticColor-core-background-neutral-subtle: #2A2A2A !important;
+        --wb-semanticColor-core-background-instructive-subtle: #1B2A45 !important;
+        --wb-semanticColor-core-foreground-neutral-strong: #EDEDED !important;
+        --wb-semanticColor-core-foreground-neutral-default: #B3B3B3 !important;
+        --wb-semanticColor-core-foreground-neutral-subtle: #8C8C8C !important;
+        --wb-semanticColor-core-border-neutral-subtle: rgba(255, 255, 255, 0.18) !important;
+        --wb-semanticColor-link-rest: #7FA8FF !important;
+        --wb-semanticColor-link-hover: #A3C0FF !important;
+        --wb-semanticColor-link-press: #A3C0FF !important;
+    }
+
+    html, body {
+        background-color: #121212 !important;
+        color-scheme: dark;
+    }
+
+    /* White surfaces (cards, panels, menus) */
+    [${ATTR.background}="surface"] { background-color: #1E1E1E !important; }
+
+    /* Off-white / tinted surfaces (sidebars, highlights, hover states) */
+    [${ATTR.background}="subtle"] { background-color: #2A2A2A !important; }
+
+    /* Light gradients, e.g. the fade at the bottom of the sidebar */
+    [${ATTR.backgroundImage}] { background-image: none !important; }
+
+    [${ATTR.text}="primary"] { color: #EDEDED !important; }
+    [${ATTR.text}="secondary"] { color: #B3B3B3 !important; }
+
+    [${ATTR.border}] { border-color: rgba(255, 255, 255, 0.18) !important; }
+
+    /* Blue link/accent text, lightened for contrast on dark */
+    [${ATTR.text}="accent"] { color: #7FA8FF !important; }
+`;
+
+const SKIPPED_TAGS = new Set(["IMG", "PICTURE", "VIDEO", "CANVAS", "IFRAME", "SVG", "STYLE", "SCRIPT"]);
+
+// MARK: - Color helpers
+
+function parseColor(value) {
+    const parts = value.match(/[\d.]+/g);
+    if (!parts || parts.length < 3) return null;
+    const [r, g, b, a = 1] = parts.map(Number);
+    return { r, g, b, a };
 }
 
-function injectDarkMode() {
-    style = document.createElement('style');
-    style.textContent = `
-        /* ELEMENTS 
-        _fryalgi: Course challenge footer
-        _6vli2nb: Course mastery highlight box
-        _a4dcxhc: Unit practice box
-        */
-        html, main, ._1v7bqtc2, #header-dropdown, #top-header-container, ._1dbhd502, ._fryalgi, ._6vli2nb, ._a4dcxhc {
-            background-color: #121212 !important;
-        }
-      
-        /* ELEMENTS 
-        _xmj6ftz: Sidebar course header
-        _1g9xbd8f: Sidebar course units
-        _10q4fwvt: Course challenge box
-        _1yg7xuga: Exercise hover box
-        _joa76hj: Streak week hover box
-        _2qe0as: Unit section
-        _rflrqt: Quiz challenge box
-        _162gowz9: Highlighted unit section
-        _1solqon7, _7thghm: Unit description box
-        */
-        .stp-animated-banner, ._158ir6wt, ._vmquk6f, #username-picker-container, .modal-footer, ._fss88w4, ._xmj6ftz, ._1g9xbd8f, ._10q4fwvt, ._1yg7xuga, ._pxfwtyj, ._1tvlo9eq, ._joa76hj, ._2qe0as, ._rflrqt, ._162gowz9, ._1solqon7, ._7thghm {
-            background-color: #191919 !important;
-        }
-      
-        .user-info, .header-user-settings, ._lhvgag5, ._xmja1e8, ._xu2jcg, ._c53vsu1 {
-            background-color: #1F1F1F !important;
-        }
-      
-        /* Unit section border */
-        ._c53vsu1 {
-            border: solid 1px rgba(200,200,200,0.50) !important;
-        }
-      
-        /* TEXT
-        _1rhtxmd7: Course challenge title
-        _19kv87av: Course challenge book icon
-        _vn21y15: Course chellenge description
-        _5nw48vg: Sidebar unit title
-        _yutmpt: Course mastery unit title
-        _pqblyia: Course mastery legend text
-        _w6ztkyn: Course page title
-        _1izjhmh9: Course challenge footer title
-        _1fzwn6xn: Course challenge footer description
-        _1bm1zjqm: Up next text
-        _1tmst71o: Up next sparkle icon
-        _6v6ik2n: Course mastery unit missing explanation
-        _7rlsjk: Welcome course title
-        _1xxbrjb: Welcome course description
-        _93y654b: Streak bubble text
-        _e7vc6cd: Streak week bubble text
-        _1cmrgu7g: Streak progress information title
-        _hgszivt: Streak progress information text
-        _97t3tls: Streak level skills progress text
-        _b6fxohx: Quiz challenge box text
-        _1qps80rt: Unit section title
-        _3x1qmdh: Mastery status text
-        _1n1r9lt7: Practice text
-        _rpbeml: Unit description text
-        _oa7jvj7: Practice status text
-        */
-        h2, h3, h4, b, ._1h62wb2e, ._1ltrm5gv, ._1m7imn5w, ._9pl6rtj, ._1irdsj0v, ._167zy1df, ._1bkn1zo, ._7mb6uf5, ._136dqw5w, ._1h09evv, .badge-count, ._1ell7dku, ._1hl2debl, ._8ry3zep, ._1q0d09t, ._dwmetq, ._1rhtxmd7, ._19kv87av, ._vn21y15, ._5nw48vg, ._yutmpt, ._pqblyia, ._w6ztkyn, ._1izjhmh9, ._1fzwn6xn, ._1bm1zjqm, ._1tmst71o, ._7rlsjk, ._1xxbrjb, ._6v6ik2n, ._93y654b, ._e7vc6cd, ._hgszivt, ._1cmrgu7g, ._97t3tls, ._b6fxohx, ._1qps80rt, ._3x1qmdh, ._1n1r9lt7, ._rpbeml, ._oa7jvj7 {
-            color: #ffffff !important;
-        }
-      
-        /* Course mastery boxes */
-        ._6vli2nb, ._1xyf4qti {
-            border-bottom: 1px solid rgba(255,255,255,0.5) !important;
-        }
-      
-        /* Selected/hyperlink text */
-        ._eheaiue, ._1k43t9ye, ._x1h08ae, ._1ejvexq8, ._1nlxlc8a, .empty-field, ._i7xxeac {
-            color: #1865F2 !important;
-        }
-      
-        /* Sidebar bottom gradient */
-        ._1t2avldr {
-            background: linear-gradient(to bottom, transparent 0%, black 80%) !important;
-        }
-      
-        /* Streak explanation bubble background */
-        ._xv24cwj {
-            background-color: #121212 !important;
-        }
-      `;
-    document.head.appendChild(style);
-    console.log("[NightKhanAcademy] Injected Dark Mode!")
-    
-    // Watch for DOM changes
-    observer = new MutationObserver(() => {
-        if (!document.head.contains(style)) {
-            document.head.appendChild(style);
+function luminance({ r, g, b }) {
+    const channel = (c) => {
+        c /= 255;
+        return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    };
+    return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+}
+
+function saturation({ r, g, b }) {
+    return Math.max(r, g, b) - Math.min(r, g, b);
+}
+
+// MARK: - Tagging
+
+function clearTags(element) {
+    for (const name of Object.values(ATTR)) element.removeAttribute(name);
+}
+
+function tagElement(element) {
+    if (SKIPPED_TAGS.has(element.tagName.toUpperCase()) || element.closest("svg")) return;
+    if (element.hasAttribute(TOGGLE_MARKER)) return;
+
+    const style = getComputedStyle(element);
+
+    const background = parseColor(style.backgroundColor);
+    if (background && background.a >= 0.5) {
+        const lum = luminance(background);
+        if (lum > 0.97) element.setAttribute(ATTR.background, "surface");
+        else if (lum > 0.75) element.setAttribute(ATTR.background, "subtle");
+    }
+
+    if (/gradient\(.*rgba?\(2[3-5]\d, 2[3-5]\d, 2[3-5]\d/.test(style.backgroundImage)) {
+        element.setAttribute(ATTR.backgroundImage, "");
+    }
+
+    const text = parseColor(style.color);
+    if (text && text.a > 0) {
+        const lum = luminance(text);
+        if (lum < 0.3 && saturation(text) > 100) element.setAttribute(ATTR.text, "accent");
+        else if (lum < 0.05) element.setAttribute(ATTR.text, "primary");
+        else if (lum < 0.3) element.setAttribute(ATTR.text, "secondary");
+    }
+
+    const border = parseColor(style.borderTopColor);
+    if (border && border.a > 0 && parseFloat(style.borderTopWidth) > 0 && luminance(border) < 0.3) {
+        element.setAttribute(ATTR.border, "");
+    }
+}
+
+function tagTree(root) {
+    if (root.nodeType !== Node.ELEMENT_NODE) return;
+    tagElement(root);
+    for (const element of root.querySelectorAll("*")) tagElement(element);
+}
+
+// MARK: - Change tracking
+
+const pendingRoots = new Set();
+let frameRequested = false;
+
+function queue(element) {
+    pendingRoots.add(element);
+    if (frameRequested) return;
+    frameRequested = true;
+    requestAnimationFrame(() => {
+        frameRequested = false;
+        const roots = [...pendingRoots];
+        pendingRoots.clear();
+        if (!isDarkModeEnabled()) return;
+        for (const root of roots) {
+            if (root.isConnected) tagTree(root);
         }
     });
+}
+
+function handleMutations(mutations) {
+    for (const mutation of mutations) {
+        if (mutation.type === "attributes") {
+            clearTags(mutation.target);
+            queue(mutation.target);
+        } else {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) queue(node);
+            }
+        }
+    }
     
-    observer.observe(document.body, {
+    if (styleElement && !styleElement.isConnected) {
+        document.head.appendChild(styleElement);
+    }
+}
+
+// MARK: - Dark mode
+
+let styleElement = null;
+let observer = null;
+
+function isDarkModeEnabled() {
+    return styleElement !== null;
+}
+
+function enableDarkMode() {
+    if (isDarkModeEnabled()) return;
+
+    styleElement = document.createElement("style");
+    styleElement.textContent = DARK_MODE_CSS;
+    document.head.appendChild(styleElement);
+
+    tagTree(document.body);
+
+    observer = new MutationObserver(handleMutations);
+    observer.observe(document.documentElement, {
         childList: true,
         subtree: true,
+        attributes: true,
+        attributeFilter: ["class", "style"],
     });
-    
-    darkModeEnabled = true
-    localStorage.setItem("DarkModeEnabled", "true");
+
+    localStorage.setItem(STORAGE_KEY, "true");
+    console.log(`${LOG_PREFIX} Dark Mode on`);
 }
 
-function ejectDarkMode() {
-    if (observer) {
-        observer.disconnect();
-        observer = null;
-    }
-    if (style) {
-        style.remove();
-        style = null;
-    }
-    
-    darkModeEnabled = false;
-    localStorage.setItem("DarkModeEnabled", "false");
-    console.log("[NightKhanAcademy] Ejected Dark Mode!");
+function disableDarkMode() {
+    observer?.disconnect();
+    observer = null;
+    styleElement?.remove();
+    styleElement = null;
+
+    const selector = Object.values(ATTR).map((name) => `[${name}]`).join(",");
+    for (const element of document.querySelectorAll(selector)) clearTags(element);
+
+    localStorage.setItem(STORAGE_KEY, "false");
+    console.log(`${LOG_PREFIX} Dark Mode off`);
 }
+
+function toggleDarkMode() {
+    isDarkModeEnabled() ? disableDarkMode() : enableDarkMode();
+}
+
+// MARK: - Menu toggle
 
 function injectToggleButton() {
-    // Find the dropdown Settings button using its href value
-    const settingsButton = document.querySelector('a[href="/settings/account"]');
-    
-    if (!settingsButton) {
-        console.log("[NightKhanAcademy] Could not find Settings button!");
-        return;
-    } else if (document.querySelector('[toggle-button-injected="true"]')) {
-        return;
-    }
-    
+    if (document.querySelector(`[${TOGGLE_MARKER}]`)) return;
+
+    const settingsLink = document.querySelector('a[href="/settings/account"]');
+    const settingsListItem = settingsLink?.closest("li");
+    if (!settingsListItem) return;
+
     const listItem = document.createElement("li");
-    listItem.setAttribute("toggle-button-injected", "true");
-    
+    listItem.setAttribute(TOGGLE_MARKER, "");
+
     const anchor = document.createElement("a");
-    anchor.className = "_v7zs5hu _p8zr6r"; // Match <a> style of dropdown buttons
-    
-    const span = document.createElement("span");
-    span.className = "_i7xxeac"; // Match <span> style of dropdown buttons
-    span.textContent = "Toggle Dark Mode";
-    
-    anchor.appendChild(span);
-    anchor.addEventListener("click", (e) => {
-        if (darkModeEnabled == false) {
-            injectDarkMode();
-        } else {
-            ejectDarkMode();
-        }
-        console.log(`[NightKhanAcademy] Dark Mode is now ${darkModeEnabled ? "on" : "off"}`);
+    anchor.className = settingsLink.className;
+    anchor.href = "#";
+    anchor.textContent = "Toggle Dark Mode";
+    anchor.addEventListener("click", (event) => {
+        event.preventDefault();
+        toggleDarkMode();
     });
-    
+
     listItem.appendChild(anchor);
-    
-    const settingsListItem = settingsButton.closest("li");
-    if (settingsListItem && settingsListItem.parentElement) {
-        settingsListItem.insertAdjacentElement("afterend", listItem);
-        console.log("[NightKhanAcademy] Added toggle under Settings button");
-    }
+    settingsListItem.after(listItem);
 }
 
-// Watch for DOM changes
-if (!window.__toggleObserverInitialized) {
-    window.__toggleObserverInitialized = true;
-    
-    new MutationObserver(() => injectToggleButton())
-    .observe(document.body, { childList: true, subtree: true });
+// MARK: - Startup
+
+if (localStorage.getItem(STORAGE_KEY) === "true") {
+    enableDarkMode();
 }
+
+new MutationObserver(injectToggleButton)
+    .observe(document.body, { childList: true, subtree: true });

@@ -1,10 +1,10 @@
 {
     "extension_name": {
-        "message": "NightKhanAcademy Extension",
+        "message": "NightKhanAcademy",
         "description": "The display name for the extension."
     },
     "extension_description": {
-        "message": "This is NightKhanAcademy Extension. You should tell us what your extension does here.",
+        "message": "Adds a dark mode toggle to Khan Academy.",
         "description": "Description of what the extension does."
     }
 }
